@@ -1368,7 +1368,8 @@ class TestSerialize:
         assert len(f2.reference_tasks()) == 2
         assert {t.name for t in f2.reference_tasks()} == {"2", "3"}
         assert f2.name == f.name
-        assert isinstance(f2.schedule, prefect.schedules.CronSchedule)
+        assert isinstance(f2.schedule, prefect.schedules.Schedule)
+        assert isinstance(f2.schedule.clocks[0], prefect.schedules.clocks.CronClock)
 
     def test_serialize_validates_invalid_flows(self):
         t1, t2 = Task(), Task()
@@ -1424,6 +1425,9 @@ class TestFlowRunMethod:
         class MockSchedule(prefect.schedules.Schedule):
             call_count = 0
 
+            def __init__(self):
+                super().__init__(clocks=[])
+
             def next(self, n):
                 if self.call_count < 2:
                     self.call_count += 1
@@ -1450,6 +1454,9 @@ class TestFlowRunMethod:
         class MockSchedule(prefect.schedules.Schedule):
             call_count = 0
 
+            def __init__(self):
+                super().__init__(clocks=[])
+
             def next(self, n):
                 if self.call_count < 2:
                     self.call_count += 1
@@ -1473,6 +1480,9 @@ class TestFlowRunMethod:
     def test_flow_dot_run_responds_to_config(self):
         class MockSchedule(prefect.schedules.Schedule):
             call_count = 0
+
+            def __init__(self):
+                super().__init__(clocks=[])
 
             def next(self, n):
                 if self.call_count < 2:
@@ -1499,6 +1509,9 @@ class TestFlowRunMethod:
         class MockSchedule(prefect.schedules.Schedule):
             call_count = 0
 
+            def __init__(self):
+                super().__init__(clocks=[])
+
             def next(self, n):
                 if self.call_count < 1:
                     self.call_count += 1
@@ -1521,6 +1534,9 @@ class TestFlowRunMethod:
     def test_scheduled_runs_handle_retries(self):
         class MockSchedule(prefect.schedules.Schedule):
             call_count = 0
+
+            def __init__(self):
+                super().__init__(clocks=[])
 
             def next(self, n):
                 if self.call_count < 1:
@@ -1559,6 +1575,9 @@ class TestFlowRunMethod:
     def test_flow_dot_run_handles_cached_states(self):
         class MockSchedule(prefect.schedules.Schedule):
             call_count = 0
+
+            def __init__(self):
+                super().__init__(clocks=[])
 
             def next(self, n):
                 if self.call_count < 3:
@@ -1659,8 +1678,12 @@ def test_flow_run_raises_informative_error_for_certain_kwargs():
 
 
 def test_flow_run_raises_if_no_more_scheduled_runs():
-    schedule = prefect.schedules.OneTimeSchedule(
-        start_date=pendulum.now("utc").add(days=-1)
+    schedule = prefect.schedules.Schedule(
+        clocks=[
+            prefect.schedules.clocks.DatesClock(
+                dates=[pendulum.now("utc").add(days=-1)]
+            )
+        ]
     )
     f = Flow(name="test", schedule=schedule)
     with pytest.raises(ValueError) as exc:
