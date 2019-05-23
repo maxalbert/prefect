@@ -20,12 +20,15 @@ These changes are available in the [master branch](https://github.com/PrefectHQ/
 - Raise informative errors when Docker storage push / pull fails - [#1029](https://github.com/PrefectHQ/prefect/issues/1029)
 - Standardized `__repr__`s for various classes, to remove inconsistencies  - [#617](https://github.com/PrefectHQ/prefect/issues/617)
 - Allow for use of local images in Docekr storage - [#1052](https://github.com/PrefectHQ/prefect/pull/1052)
+- Allow for doc tests and doc generation to run without installing `all_extras` - [#1057](https://github.com/PrefectHQ/prefect/issues/1057)
 
 ### Task Library
 
 - Add task for creating new branches in a GitHub repository - [#1011](https://github.com/PrefectHQ/prefect/pull/1011)
 - Add tasks to create, delete, invoke, and list AWS Lambda functions [#1009](https://github.com/PrefectHQ/prefect/issues/1009)
 - Add tasks for integration with spaCy pipelines [#1018](https://github.com/PrefectHQ/prefect/issues/1018)
+- Add tasks for querying Postgres database [#1022](https://github.com/PrefectHQ/prefect/issues/1022)
+- Add task for waiting on a Docker container to run and optionally raising for nonzero exit code - [#1061](https://github.com/PrefectHQ/prefect/pull/1061)
 
 ### Fixes
 
